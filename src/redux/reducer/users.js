@@ -1,20 +1,18 @@
+import produce from 'immer';
+
+import { ADD_REVIEW } from '../constants';
 import { normalizedUsers } from '../../fixtures';
-import { ADDUSER } from '../constants';
+import { arrToMap } from '../utils';
 
-const defaultUsers = normalizedUsers.reduce((acc, user) => {
-  return {
-    ...acc,
-    [user.id]: user
-  }
-}, {})
-
-export default (users = defaultUsers, action) => {
-  const { type, id, name } = action;
+export default produce((draft = arrToMap(normalizedUsers), action) => {
+  const { type, review, userId } = action;
 
   switch (type) {
-    case ADDUSER:
-      return {...users, [id]: {id, name}}
+    case ADD_REVIEW:
+      const { name } = review;
+      draft[userId] = { id: userId, name };
+      break;
     default:
-      return users;
+      return draft;
   }
-};
+});

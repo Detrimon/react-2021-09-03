@@ -1,39 +1,34 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Review from './review';
 import { connect } from 'react-redux';
+import Review from './review';
 import ReviewForm from './review-form';
 import styles from './reviews.module.css';
-import { allReviewsSelector, allUsersSelector } from '../../redux/selectors';
 
-const Reviews = ({ restaurantId, reviews, allReviews, allUsers }) => {
+import { loadReviews } from '../../redux/actions';
+
+const Reviews = ({ reviews, restId, loadReviews }) => {
+  useEffect(() => {
+    loadReviews(restId);
+  }, [restId, loadReviews]);
+
   return (
-    <div className={styles.reviews} data-id="reviews">
-      {reviews.map((reviewId) => {
-        const review = allReviews[reviewId];
-        const userName = allUsers[review.userId].name;
-        return (
-          <Review key={reviewId} user={userName} text={review.text} rating={review.rating} data-id="reviewsReview"/>
-        )
-      })}
-      <ReviewForm restaurantId={restaurantId} />
+    <div className={styles.reviews}>
+      {reviews.map((id) => (
+        <Review key={id} id={id} />
+      ))}
+      <ReviewForm restId={restId} />
     </div>
   );
 };
 
-// Reviews.propTypes = {
-//   reviews: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       id: PropTypes.string.isRequired,
-//     }).isRequired
-//   ).isRequired,
-// };
+Reviews.propTypes = {
+  restId: PropTypes.string,
+  reviews: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+};
 
-const mapStateToProps = (state) => {
-  debugger;
-  return ({
-    allReviews: allReviewsSelector(state),
-    allUsers: allUsersSelector(state)
-  })
-}
+const mapDispatchToProps = {
+  loadReviews,
+};
 
-export default connect(mapStateToProps)(Reviews);
+export default connect(null, mapDispatchToProps)(Reviews);

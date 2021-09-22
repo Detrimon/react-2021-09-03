@@ -10,5 +10,5 @@ export default combineReducers({
   restaurants,
   products,
   reviews,
-  users
+  users,
 });

@@ -1,20 +1,18 @@
+import { ADD_REVIEW } from '../constants';
 import { normalizedReviews } from '../../fixtures';
-import { ADDREVIEW } from '../constants';
+import { arrToMap } from '../utils';
 
-const defaultReviews = normalizedReviews.reduce((acc, review) => {
-  return {
-    ...acc,
-    [review.id]: review
-  }
-}, {})
-
-export default (reviews = defaultReviews, action) => {
-  const { type, id, userId, text, rating } = action;
+export default (state = arrToMap(normalizedReviews), action) => {
+  const { type, review, reviewId, userId } = action;
 
   switch (type) {
-    case ADDREVIEW:
-      return {...reviews, [id]: {id, userId, text, rating}};
+    case ADD_REVIEW:
+      const { text, rating } = review;
+      return {
+        ...state,
+        [reviewId]: { id: reviewId, userId, text, rating },
+      };
     default:
-      return reviews;
+      return state;
   }
 };
